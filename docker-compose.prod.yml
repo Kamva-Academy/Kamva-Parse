@@ -1,0 +1,85 @@
+version: "3"
+services:
+    nginx:
+        image: nginx:latest
+        restart: always
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./log/nginx:/var/log/nginx
+        ports:
+            - "80:80"
+        links:
+            - node_server:node_server
+            - parse_server:parse_server
+            - parse_dashboard:parse_dashboard
+
+    mongo:
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+            MONGO_INITDB_DATABASE: ${DB_NAME}
+        volumes:
+            - ./data/db:/data/db
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+    parse_server:
+        container_name: parse_server
+        image: parseplatform/parse-server:4.5.0
+        restart: always
+        links:
+            - mongo
+        depends_on:
+            - mongo
+        environment:
+            PARSE_SERVER_APPLICATION_ID: ${PARSE_APP_ID}
+            PARSE_SERVER_MASTER_KEY: ${PARSE_MASTER_KEY}
+            PARSE_SERVER_JAVASCRIPT_KEY: ${PARSE_JAVASCRIPT_KEY}
+            PARSE_SERVER_DATABASE_URI: "mongodb://${DB_USER}:${DB_PASS}@mongo:27017/${DB_NAME}"
+            PARSE_ENABLE_CLOUD_CODE: "yes"
+            PARSE_SERVER_SESSION_LENGTH: ${SERVER_SESSION_LENGTH_SECOND}
+            PARSE_SERVER_ALLOW_CLIENT_CLASS_CREATION: 0
+            PARSE_SERVER_START_LIVE_QUERY_SERVER: 1
+            PARSE_SERVER_LIVE_QUERY: ${PARSE_LIVE_QUERY_CLASSES}
+            PARSE_LIVE_QUERY_SERVER_LOG_LEVEL: "VERBOSE"
+            VERBOSE: 1
+            PARSE_LIVE_QUERY_SERVER_VERBOSE: 1
+            PARSE_SERVER_CLOUD: "/parse-server/cloud/main.js"
+            # See more https://github.com/parse-community/parse-server/blob/master/src/Options/Definitions.js
+        volumes:
+            - ./cloud/dist:/parse-server/cloud
+
+    parse_dashboard:
+        container_name: parse_dashboard
+        image: parseplatform/parse-dashboard
+        restart: always
+        environment:
+            PARSE_DASHBOARD_SERVER_URL: ${PARSE_SERVER_URL}
+            MOUNT_PATH: /parse_dashboard/
+            PARSE_DASHBOARD_APP_ID: ${PARSE_APP_ID}
+            PARSE_DASHBOARD_MASTER_KEY: ${PARSE_MASTER_KEY}
+            PARSE_DASHBOARD_JAVASCRIPT_KEY: ${PARSE_JAVASCRIPT_KEY}
+            PARSE_DASHBOARD_APP_NAME: ${PARSE_APP_NAME}
+            PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: 1
+            PARSE_DASHBOARD_USER_ID: ${PARSE_DASHBOARD_USER}
+            PARSE_DASHBOARD_USER_PASSWORD: ${PARSE_DASHBOARD_PASS}
+
+    node_server:
+        container_name: node_server
+        build:
+            context: ./node_server
+            dockerfile: ./Dockerfile.prod
+        volumes:
+            - ./node_server:/usr/src/app
+            - /usr/src/app/node_modules
+        links:
+            - parse_server
+        depends_on:
+            - parse_server
+        environment:
+            APP_ID: ${PARSE_APP_ID}
+            MASTER_KEY: ${PARSE_MASTER_KEY}
+            JS_KEY: ${PARSE_JAVASCRIPT_KEY}
+            INTERNAL_PARSE_SERVER_URL: ${INTERNAL_PARSE_SERVER_URL}
