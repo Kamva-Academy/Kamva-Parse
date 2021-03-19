@@ -1,1 +1,3 @@
-import './init_parse_schema';
+import initDBSchema from './init_parse_schema.js';
+
+initDBSchema();
