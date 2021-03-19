@@ -72,8 +72,7 @@ services:
             context: ./node_server
             dockerfile: ./Dockerfile.prod
         volumes:
-            - ./node_server:/usr/src/app
-            - /usr/src/app/node_modules
+            - /app/node_modules
         links:
             - parse_server
         depends_on:
