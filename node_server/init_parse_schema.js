@@ -30,6 +30,27 @@ function initWhiteboardSchema() {
   return schema.save();
 }
 
+function initWhiteboardActionsSchema() {
+  const schema = new Parse.Schema('WhiteboardAction')
+    .addString('uuid', {
+      required: true,
+    })
+    .addObject('action', {
+      required: true,
+    });
+  schema.setCLP({
+    get: { '*': true },
+    find: {},
+    count: {},
+    create: {},
+    update: {},
+    delete: {},
+    addField: {},
+    protectedFields: {},
+  });
+  return schema.save();
+}
+
 const errorHandler = (err) => {
   console.log(err);
   if (err.code === 100) {
@@ -40,5 +61,6 @@ const errorHandler = (err) => {
 export default function initDBSchema() {
   setTimeout(() => {
     initWhiteboardSchema().catch(errorHandler);
+    initWhiteboardActionsSchema().catch(errorHandler);
   }, 1000);
 }
