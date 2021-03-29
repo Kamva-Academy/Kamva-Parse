@@ -2,8 +2,8 @@ import { changeTeamState, getTeamUuid } from '../team-state';
 
 Parse.Cloud.define(
   'changeTeamState',
-  async ({ params: { token, stateId } }) => {
-    const uuid = await getTeamUuid(token);
+  async ({ params: { token, stateId, baseURL } }) => {
+    const uuid = await getTeamUuid(token, baseURL);
     await changeTeamState(uuid, stateId);
   },
   {
@@ -12,6 +12,9 @@ Parse.Cloud.define(
         required: true,
       },
       stateId: {
+        required: true,
+      },
+      baseURL: {
         required: true,
       },
     },
