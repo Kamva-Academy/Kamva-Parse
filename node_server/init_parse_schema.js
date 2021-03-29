@@ -51,6 +51,27 @@ function initWhiteboardActionsSchema() {
   return schema.save();
 }
 
+function initTeamStateSchema() {
+  const schema = new Parse.Schema('TeamState')
+    .addString('uuid', {
+      required: true,
+    })
+    .addString('stateId', {
+      required: true,
+    });
+  schema.setCLP({
+    get: { '*': true },
+    find: {},
+    count: {},
+    create: {},
+    update: {},
+    delete: {},
+    addField: {},
+    protectedFields: {},
+  });
+  return schema.save();
+}
+
 const errorHandler = (err) => {
   console.log(err);
   if (err.code === 100) {
@@ -62,5 +83,6 @@ export default function initDBSchema() {
   setTimeout(() => {
     initWhiteboardSchema().catch(errorHandler);
     initWhiteboardActionsSchema().catch(errorHandler);
+    initTeamStateSchema().catch(errorHandler);
   }, 1000);
 }
