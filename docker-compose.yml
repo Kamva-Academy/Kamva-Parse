@@ -27,7 +27,9 @@ services:
 
     parse_server:
         container_name: parse_server
-        image: parseplatform/parse-server:4.5.0
+        build:
+            context: ./cloud
+            dockerfile: Dockerfile
         restart: always
         links:
             - mongo
@@ -48,8 +50,6 @@ services:
             PARSE_LIVE_QUERY_SERVER_VERBOSE: 1
             PARSE_SERVER_CLOUD: "/parse-server/cloud/main.js"
             # See more https://github.com/parse-community/parse-server/blob/master/src/Options/Definitions.js
-        volumes:
-            - ./cloud/dist:/parse-server/cloud
 
     parse_dashboard:
         container_name: parse_dashboard
