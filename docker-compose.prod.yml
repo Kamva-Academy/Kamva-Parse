@@ -28,8 +28,8 @@ services:
     parse_server:
         container_name: parse_server
         build:
-           context: ./cloud
-           dockerfile: Dockerfile
+            context: ./cloud
+            dockerfile: Dockerfile
         restart: always
         links:
             - mongo
