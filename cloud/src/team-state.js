@@ -1,20 +1,4 @@
-const axios = require('axios');
-
 const TeamState = Parse.Object.extend('TeamState');
-
-export const getTeamUuid = async (
-  token,
-  baseURL = 'https://zero.rastaiha.ir',
-) => {
-  const team = (
-    await axios(baseURL + '/api/fsm/get_team/', {
-      headers: {
-        Authorization: 'JWT ' + token,
-      },
-    })
-  ).data;
-  return team.team_uuid;
-};
 
 const getTeamState = async (uuid) => {
   const query = new Parse.Query('TeamState');
