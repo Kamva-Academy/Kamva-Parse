@@ -72,6 +72,27 @@ function initTeamStateSchema() {
   return schema.save();
 }
 
+function initRequestMentorSchema() {
+  const schema = new Parse.Schema('RequestMentor')
+    .addString('teamId', {
+      required: true,
+    })
+    .addNumber('playerId', {
+      required: true,
+    });
+  schema.setCLP({
+    get: { '*': true },
+    find: {},
+    count: {},
+    create: { '*': true },
+    update: {},
+    delete: { '*': true },
+    addField: {},
+    protectedFields: {},
+  });
+  return schema.save();
+}
+
 const errorHandler = (err) => {
   console.log(err);
   if (err.code === 100) {
@@ -84,5 +105,6 @@ export default function initDBSchema() {
     initWhiteboardSchema().catch(errorHandler);
     initWhiteboardActionsSchema().catch(errorHandler);
     initTeamStateSchema().catch(errorHandler);
+    initRequestMentorSchema().catch(errorHandler);
   }, 1000);
 }
