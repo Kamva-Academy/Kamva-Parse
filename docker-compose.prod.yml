@@ -10,7 +10,6 @@ services:
         ports:
             - "80:80"
         links:
-            - node_server:node_server
             - parse_server:parse_server
             - parse_dashboard:parse_dashboard
 
