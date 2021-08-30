@@ -79,10 +79,16 @@ function initRequestMentorSchema() {
     })
     .addNumber('playerId', {
       required: true,
+    })
+    .addNumber('fsmId', {
+      required: true,
+    })
+    .addDate('time', {
+      required: true,
     });
   schema.setCLP({
     get: { '*': true },
-    find: {},
+    find: { '*': true },
     count: {},
     create: { '*': true },
     update: {},
