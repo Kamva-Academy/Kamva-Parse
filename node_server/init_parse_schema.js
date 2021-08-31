@@ -82,9 +82,6 @@ function initRequestMentorSchema() {
     })
     .addNumber('fsmId', {
       required: true,
-    })
-    .addDate('time', {
-      required: true,
     });
   schema.setCLP({
     get: { '*': true },
