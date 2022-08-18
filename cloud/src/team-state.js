@@ -1,13 +1,13 @@
 const TeamState = Parse.Object.extend('TeamState');
 
-const getTeamState = async (uuid) => {
+export const getTeamState = async (uuid) => {
   const query = new Parse.Query('TeamState');
   query.equalTo('uuid', uuid);
   const result = await query.first({ useMasterKey: true })
   return result;
 };
 
-const createTeamState = async (uuid, stateId, currentStateName, teamEnterTimeToState) => {
+export const createTeamState = async (uuid, stateId, currentStateName, teamEnterTimeToState) => {
   return await new TeamState().save({ uuid, stateId, currentStateName, teamEnterTimeToState }, { useMasterKey: true });
 };
 
