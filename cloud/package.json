@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && webpack"
   },
   "author": "",
   "license": "ISC",
